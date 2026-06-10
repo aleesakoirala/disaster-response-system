@@ -6,7 +6,7 @@ package com.university.disasterresponsesystem.client.net;
 
 /**
  *
- * @author alisha
+ * @author Shobiga Jeyasekar - 12269476
  */
 public class ServerConnection {
 
