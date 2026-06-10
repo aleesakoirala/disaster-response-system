@@ -4,10 +4,16 @@
  */
 package com.university.disasterresponsesystem.server.service;
 
+import com.university.disasterresponsesystem.common.model.DisasterType;
+
 /**
  *
  * @author alisha -12268551
  */
 public class PreparednessLogic {
+
+    String getChecklist(DisasterType type) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }
