@@ -6,7 +6,7 @@ package com.university.disasterresponsesystem.server.service;
 
 /**
  *
- * @author alisha
+ * @author alisha -12268551
  */
 public class ResourceService {
 

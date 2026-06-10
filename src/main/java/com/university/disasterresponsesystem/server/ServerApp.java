@@ -5,12 +5,20 @@
 package com.university.disasterresponsesystem.server;
 
 /**
+ * Entry point for the multi-threaded DRS server.
  *
- * @author alisha
+ * @author alisha -12268551
  */
 public class ServerApp {
 
     public static void main(String[] args) {
-        System.out.println("DRS server starting... (networking code coming next)");
+        int port = DrsServer.DEFAULT_PORT;
+        if (args.length > 0) {
+            try {
+                port = Integer.parseInt(args[0]);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        new DrsServer(port).start();
     }
 }
