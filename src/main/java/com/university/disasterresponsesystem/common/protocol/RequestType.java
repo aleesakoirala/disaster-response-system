@@ -4,10 +4,6 @@
  */
 package com.university.disasterresponsesystem.common.protocol;
 
-/**
- *
- * @author alisha
- */
 public class RequestType {
 
 }
