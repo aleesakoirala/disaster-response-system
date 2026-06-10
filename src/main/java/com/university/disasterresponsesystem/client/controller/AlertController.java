@@ -64,5 +64,11 @@ public class AlertController {
         }
     }
 
-    
+    @FXML
+    @SuppressWarnings("unchecked")
+    private void refresh() {
+        Response r = ServerConnection.send(new Request(RequestType.GET_ALERTS, ServerConnection.currentUsername()));
+        if (r.isSuccess())
+            alertList.setItems(FXCollections.observableArrayList((List<Alert>) r.getData()));
+    }
 }
