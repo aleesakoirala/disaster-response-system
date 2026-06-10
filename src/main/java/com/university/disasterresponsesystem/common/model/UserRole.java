@@ -5,9 +5,10 @@
 package com.university.disasterresponsesystem.common.model;
 
 /**
+ * Access roles for role-based access control
  *
- * @author alisha
+ * @author alisha -12268551
  */
-public class UserRole {
-
+public enum UserRole {
+    ADMIN, COORDINATOR, OPERATOR, VIEWER
 }

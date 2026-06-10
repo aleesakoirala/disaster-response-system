@@ -5,9 +5,10 @@
 package com.university.disasterresponsesystem.common.model;
 
 /**
+ * Availability of a response resource (Resource Management feature).
  *
- * @author alisha
+ * @author alisha -12268551
  */
-public class ResourceStatus {
-
+public enum ResourceStatus {
+    AVAILABLE, DISPATCHED, OUT_OF_SERVICE
 }
