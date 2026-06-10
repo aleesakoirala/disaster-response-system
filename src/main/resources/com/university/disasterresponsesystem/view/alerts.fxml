@@ -1,1 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
+<VBox spacing="10" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.university.disasterresponsesystem.client.controller.AlertController">
+    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+    <Label text="Alert Management" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <Label text="Create alert"/>
+    <TextField fx:id="incidentIdField" promptText="Incident ID (optional)"/>
+    <TextArea fx:id="messageArea" promptText="Alert message" prefRowCount="2"/>
+    <HBox spacing="8">
+        <ChoiceBox fx:id="severityChoice"/>
+        <Button text="Create" onAction="#handleCreate"/>
+    </HBox>
+
+    <Label text="Clear alert"/>
+    <HBox spacing="8">
+        <TextField fx:id="alertIdField" promptText="Alert ID"/>
+        <Button text="Deactivate" onAction="#handleDeactivate"/>
+    </HBox>
+
+    <Label text="Alerts"/>
+    <ListView fx:id="alertList" prefHeight="220"/>
+    <HBox spacing="8">
+        <Button text="Refresh" onAction="#refresh"/>
+    </HBox>
+    <Label fx:id="messageLabel" style="-fx-text-fill: #2c3e50;"/>
+</VBox>

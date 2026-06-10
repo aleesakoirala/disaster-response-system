@@ -1,1 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
+<VBox spacing="10" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.university.disasterresponsesystem.client.controller.DashboardController">
+    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+    <Label text="Dashboard" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="20">
+        <VBox spacing="6" prefWidth="360">
+            <Label text="Submit a disaster report" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="reporterField" promptText="Reporter name"/>
+            <ChoiceBox fx:id="typeChoice"/>
+            <TextField fx:id="locationField" promptText="Location"/>
+            <TextArea fx:id="descriptionArea" promptText="Description" prefRowCount="3"/>
+            <TextField fx:id="peopleField" promptText="People affected (number)"/>
+            <Button text="Submit Report" onAction="#handleSubmitReport"/>
+
+            <Separator/>
+            <Label text="Assess a report" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="reportIdField" promptText="Report ID"/>
+            <TextField fx:id="severityField" promptText="Severity 1-10"/>
+            <Button text="Assess" onAction="#handleAssess"/>
+        </VBox>
+
+        <VBox spacing="6" prefWidth="360">
+            <Label text="Reports"/>
+            <ListView fx:id="reportsList" prefHeight="180"/>
+            <Label text="Incidents"/>
+            <ListView fx:id="incidentsList" prefHeight="180"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="Refresh" onAction="#refresh"/>
+        <Button text="Resource Management" onAction="#openResources"/>
+        <Button text="Alert Management" onAction="#openAlerts"/>
+    </HBox>
+    <Label fx:id="messageLabel" style="-fx-text-fill: #2c3e50;"/>
+</VBox>
