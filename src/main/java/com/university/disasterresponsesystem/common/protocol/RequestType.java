@@ -9,6 +9,8 @@ package com.university.disasterresponsesystem.common.protocol;
  * contract: Client sends one of these, Server has a matching branch in
  * RequestDispatcher.
  *
+ * @author alisha -12268551
+ *
  */
 public enum RequestType {
     // Auth (login feature / 2.5)
