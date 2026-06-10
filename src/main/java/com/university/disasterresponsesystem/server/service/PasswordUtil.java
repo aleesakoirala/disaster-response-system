@@ -4,22 +4,40 @@
  */
 package com.university.disasterresponsesystem.server.service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+
 /**
+ * Salted SHA-256 password hashing
  *
  * @author alisha -12268551
  */
-public class PasswordUtil {
+public final class PasswordUtil {
 
-    static boolean verify(String password, String salt, String passwordHash) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private PasswordUtil() {
     }
 
-    static String generateSalt() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static String generateSalt() {
+        byte[] salt = new byte[16];
+        new SecureRandom().nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
     }
 
-    static String hash(String password, String salt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public static String hash(String password, String salt) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(salt.getBytes(StandardCharsets.UTF_8));
+            byte[] digest = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 not available", e);
+        }
     }
 
+    public static boolean verify(String password, String salt, String expectedHash) {
+        return hash(password, salt).equals(expectedHash);
+    }
 }
