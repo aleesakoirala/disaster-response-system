@@ -4,10 +4,29 @@
  */
 package com.university.disasterresponsesystem.dao;
 
+import com.university.disasterresponsesystem.common.model.Resource;
+import java.util.List;
+
 /**
  *
  * @author alisha
  */
 public class ResourceDao {
+
+    public List<Resource> findAll() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Resource findById(Long resourceId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void update(Resource r) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Resource insert(Resource resource) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }

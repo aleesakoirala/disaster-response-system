@@ -51,7 +51,7 @@ public class Request implements Serializable {
     }
 
     /**
-     * Add a parameter (fluent, so calls can be chained).
+     * Add a parameter
      */
     public Request put(String key, Object value) {
         params.put(key, value);
