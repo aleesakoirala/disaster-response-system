@@ -84,7 +84,17 @@ public class DashboardController {
     @FXML private void openResources() { openWindow("resources.fxml", "Resource Management"); }
     @FXML private void openAlerts() { openWindow("alerts.fxml", "Alert Management"); }
 
-    
+    private void openWindow(String fxml, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/university/disasterresponsesystem/view/" + fxml));
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(loader.load()));
+            stage.show();
+        } catch (Exception e) {
+            messageLabel.setText("Cannot open " + title + ": " + e.getMessage());
+        }
     }
 
     private void show(Response r) { messageLabel.setText(r.getMessage()); }
