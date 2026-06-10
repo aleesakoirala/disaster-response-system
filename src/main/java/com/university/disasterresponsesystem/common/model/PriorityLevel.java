@@ -5,9 +5,10 @@
 package com.university.disasterresponsesystem.common.model;
 
 /**
+ * Priority assigned to an incident after assessment.
  *
- * @author alisha
+ * @author alisha -12268551
  */
-public class PriorityLevel {
-
+public enum PriorityLevel {
+    LOW, MEDIUM, HIGH, CRITICAL
 }

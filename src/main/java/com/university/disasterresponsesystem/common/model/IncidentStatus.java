@@ -5,9 +5,10 @@
 package com.university.disasterresponsesystem.common.model;
 
 /**
+ * Lifecycle states of an incident.
  *
- * @author alisha
+ * @author alisha -12268551
  */
-public class IncidentStatus {
-
+public enum IncidentStatus {
+    REPORTED, ASSESSED, DISPATCHED, IN_PROGRESS, RESOLVED
 }

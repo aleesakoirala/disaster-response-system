@@ -5,9 +5,10 @@
 package com.university.disasterresponsesystem.common.model;
 
 /**
+ * Severity levels for public alerts
  *
- * @author alisha
+ * @author alisha -12268551
  */
-public class AlertSeverity {
-
+public enum AlertSeverity {
+    INFO, ADVISORY, WATCH, WARNING, EMERGENCY
 }
