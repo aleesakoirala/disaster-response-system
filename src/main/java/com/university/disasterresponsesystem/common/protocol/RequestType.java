@@ -13,9 +13,9 @@ package com.university.disasterresponsesystem.common.protocol;
  *
  */
 public enum RequestType {
-    // Auth (login feature / 2.5)
+    // Auth (login feature)
     LOGIN,
-    // Disaster reporting & assessment (from Assignment 2)
+    // Disaster reporting & assessment
     SUBMIT_REPORT,
     GET_REPORTS,
     ASSESS_REPORT,
@@ -33,6 +33,6 @@ public enum RequestType {
     CREATE_ALERT,
     GET_ALERTS,
     DEACTIVATE_ALERT,
-    // Audit (2.5 non-repudiation)
+    // Audit 
     GET_AUDIT_LOG
 }
