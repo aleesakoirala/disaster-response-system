@@ -10,4 +10,7 @@ package com.university.disasterresponsesystem.server;
  */
 public class ServerApp {
 
+    public static void main(String[] args) {
+        System.out.println("DRS server starting... (networking code coming next)");
+    }
 }
