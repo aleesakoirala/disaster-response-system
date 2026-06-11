@@ -20,8 +20,9 @@ import java.net.Socket;
  * sends a Request, and reads back a Response. Also holds the logged-in session.
  */
 public class ServerConnection {
-private static final String HOST = "localhost";
-    private static final int PORT = 5000;
+
+    private static final String HOST = "localhost";
+    private static final int PORT = 6000;
 
     private static User currentUser;
 
@@ -38,7 +39,15 @@ private static final String HOST = "localhost";
         }
     }
 
-    public static void setCurrentUser(User user) { currentUser = user; }
-    public static User getCurrentUser() { return currentUser; }
-    public static String currentUsername() { return currentUser == null ? null : currentUser.getUsername(); }
+    public static void setCurrentUser(User user) {
+        currentUser = user;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static String currentUsername() {
+        return currentUser == null ? null : currentUser.getUsername();
+    }
 }

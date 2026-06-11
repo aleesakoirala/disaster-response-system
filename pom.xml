@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.university</groupId>
     <artifactId>DisasterResponseSystem</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -11,7 +10,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Compile to Java 21 (LTS) even on JDK 26, for library compatibility -->
         <maven.compiler.release>21</maven.compiler.release>
         <javafx.version>21.0.4</javafx.version>
         <junit.version>5.10.2</junit.version>
@@ -20,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!-- JavaFX (client GUI) -->
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -32,14 +30,14 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- MySQL driver (DAO layer) -->
+        <!-- MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.4.0</version>
         </dependency>
 
-        <!-- JUnit 5 (testing) -->
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -50,18 +48,25 @@
 
     <build>
         <plugins>
-            <!-- Run the JavaFX client:  mvn clean javafx:run -->
+            <!-- JavaFX client: mvn javafx:run -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>${client.mainClass}</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
                     <mainClass>${client.mainClass}</mainClass>
                 </configuration>
             </plugin>
 
-            <!-- Run the server:  mvn exec:java -Dexec.mainClass=com.university.disasterresponsesystem.server.ServerApp
-            (or right-click ServerApp.java -> Run File in NetBeans) -->
+            <!-- Server: right-click ServerApp -> Run File -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -71,7 +76,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Run the JUnit tests -->
+            <!-- JUnit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

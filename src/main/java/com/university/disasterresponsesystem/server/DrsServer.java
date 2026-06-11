@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  */
 public class DrsServer {
 
-    public static final int DEFAULT_PORT = 5000;
+    public static final int DEFAULT_PORT = 6000;
 
     private final int port;
     private final ExecutorService threadPool;
