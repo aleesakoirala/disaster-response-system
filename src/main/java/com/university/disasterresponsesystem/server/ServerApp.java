@@ -4,6 +4,9 @@
  */
 package com.university.disasterresponsesystem.server;
 
+import com.university.disasterresponsesystem.dao.Database;
+import com.university.disasterresponsesystem.server.service.AuthService;
+
 /**
  * Entry point for the multi-threaded DRS server.
  *
@@ -19,6 +22,8 @@ public class ServerApp {
             } catch (NumberFormatException ignored) {
             }
         }
+        Database.initialize();
+        new AuthService().seedDefaultAdmin();
         new DrsServer(port).start();
     }
 }

@@ -15,7 +15,7 @@ import java.sql.Statement;
 public class Database {
 
     private static final String HOST = "localhost";
-    private static final int PORT = 5000;
+    private static final int PORT = 3306;
     private static final String DB_NAME = "drs_db";
     private static final String USER = "root";
     private static final String PASSWORD = "P@ssw0rd";
@@ -44,6 +44,19 @@ public class Database {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    /**
+     * Called from ServerApp on startup.
+     */
+    public static void initialize() {
+        try {
+            getInstance();
+            System.out.println("Database initialised (tables ready).");
+        } catch (SQLException e) {
+            System.err.println("Database init failed: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     private void createTablesIfAbsent() throws SQLException {
