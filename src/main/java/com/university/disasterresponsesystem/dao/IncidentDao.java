@@ -22,8 +22,7 @@ public class IncidentDao {
     public List<Incident> findAll() {
         String sql = "SELECT * FROM incidents ORDER BY id DESC";
         List<Incident> list = new ArrayList<>();
-        try (Statement st = conn().createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = conn().createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(mapRow(rs));
             }
@@ -48,7 +47,7 @@ public class IncidentDao {
         return null;
     }
 
-    public Object findByReportId(Long reportId) {
+    public Incident findByReportId(Long reportId) {
         String sql = "SELECT * FROM incidents WHERE report_id = ? LIMIT 1";
         try (PreparedStatement ps = conn().prepareStatement(sql)) {
             ps.setLong(1, reportId);
@@ -65,8 +64,8 @@ public class IncidentDao {
 
     public Incident insert(Incident incident) {
         String sql = "INSERT INTO incidents "
-                   + "(report_id, severity_score, priority_level, status, assigned_departments, warning_message, damage_summary) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + "(report_id, severity_score, priority_level, status, assigned_departments, warning_message, damage_summary) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, incident.getSourceReport().getId());
             ps.setInt(2, incident.getSeverityScore());
@@ -89,7 +88,7 @@ public class IncidentDao {
 
     public void update(Incident i) {
         String sql = "UPDATE incidents SET severity_score=?, priority_level=?, status=?, "
-                   + "assigned_departments=?, warning_message=?, damage_summary=? WHERE id=?";
+                + "assigned_departments=?, warning_message=?, damage_summary=? WHERE id=?";
         try (PreparedStatement ps = conn().prepareStatement(sql)) {
             ps.setInt(1, i.getSeverityScore());
             ps.setString(2, i.getPriorityLevel().name());
@@ -119,17 +118,22 @@ public class IncidentDao {
     }
 
     private String departmentsToString(List<DepartmentType> depts) {
-        if (depts == null || depts.isEmpty()) return "";
+        if (depts == null || depts.isEmpty()) {
+            return "";
+        }
         return depts.stream().map(Enum::name).collect(Collectors.joining(","));
     }
 
     private List<DepartmentType> stringToDepartments(String s) {
         List<DepartmentType> result = new ArrayList<>();
-        if (s == null || s.isBlank()) return result;
+        if (s == null || s.isBlank()) {
+            return result;
+        }
         for (String name : s.split(",")) {
             try {
                 result.add(DepartmentType.valueOf(name.trim()));
-            } catch (IllegalArgumentException ignored) { }
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         return result;
     }

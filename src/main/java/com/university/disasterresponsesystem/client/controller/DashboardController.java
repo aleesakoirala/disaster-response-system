@@ -18,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,16 +29,40 @@ import javafx.stage.Stage;
  * @author Shobiga Jeyasekar - 12269476
  */
 public class DashboardController {
-@FXML private ChoiceBox<DisasterType> typeChoice;
-    @FXML private TextField reporterField, locationField, peopleField, reportIdField, severityField;
-    @FXML private TextArea descriptionArea;
-    @FXML private ListView<DisasterReport> reportsList;
-    @FXML private ListView<Incident> incidentsList;
-    @FXML private Label messageLabel;
+
+    @FXML
+    private ChoiceBox<DisasterType> typeChoice;
+    @FXML
+    private TextField reporterField, locationField, peopleField, reportIdField, severityField;
+    @FXML
+    private TextArea descriptionArea;
+    @FXML
+    private ListView<DisasterReport> reportsList;
+    @FXML
+    private ListView<Incident> incidentsList;
+    @FXML
+    private Label messageLabel;
 
     @FXML
     private void initialize() {
         typeChoice.setItems(FXCollections.observableArrayList(DisasterType.values()));
+
+        reportsList.setCellFactory(lv -> new ListCell<DisasterReport>() {
+            @Override
+            protected void updateItem(DisasterReport item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.toString());
+            }
+        });
+
+        incidentsList.setCellFactory(lv -> new ListCell<Incident>() {
+            @Override
+            protected void updateItem(Incident item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.toString());
+            }
+        });
+
         refresh();
     }
 
@@ -52,6 +77,11 @@ public class DashboardController {
                     .put("peopleAffected", Integer.parseInt(peopleField.getText().trim()));
             show(ServerConnection.send(req));
             refresh();
+            reporterField.clear();
+            locationField.clear();
+            descriptionArea.clear();
+            peopleField.clear();
+            typeChoice.setValue(null);
         } catch (NumberFormatException e) {
             messageLabel.setText("People affected must be a number");
         }
@@ -74,15 +104,24 @@ public class DashboardController {
     @SuppressWarnings("unchecked")
     private void refresh() {
         Response reps = ServerConnection.send(new Request(RequestType.GET_REPORTS, ServerConnection.currentUsername()));
-        if (reps.isSuccess())
+        if (reps.isSuccess()) {
             reportsList.setItems(FXCollections.observableArrayList((List<DisasterReport>) reps.getData()));
+        }
         Response incs = ServerConnection.send(new Request(RequestType.GET_INCIDENTS, ServerConnection.currentUsername()));
-        if (incs.isSuccess())
+        if (incs.isSuccess()) {
             incidentsList.setItems(FXCollections.observableArrayList((List<Incident>) incs.getData()));
+        }
     }
 
-    @FXML private void openResources() { openWindow("resources.fxml", "Resource Management"); }
-    @FXML private void openAlerts() { openWindow("alerts.fxml", "Alert Management"); }
+    @FXML
+    private void openResources() {
+        openWindow("resources.fxml", "Resource Management");
+    }
+
+    @FXML
+    private void openAlerts() {
+        openWindow("alerts.fxml", "Alert Management");
+    }
 
     private void openWindow(String fxml, String title) {
         try {
@@ -97,5 +136,8 @@ public class DashboardController {
         }
     }
 
-    private void show(Response r) { messageLabel.setText(r.getMessage()); }
+    private void show(Response r) {
+        messageLabel.setText(r.getMessage());
+    }
+
 }
