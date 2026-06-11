@@ -1,72 +1,61 @@
 package com.university.disasterresponsesystem.dao;
 
-import com.university.disasterresponsesystem.common.model.*;
+import com.university.disasterresponsesystem.common.model.DisasterReport;
+import com.university.disasterresponsesystem.common.model.DisasterType;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Data Access Object for the incidents table.
+ * Data Access Object for the disaster_reports table.
  *
  * @author Joyee Chakraborty - 12286715
  */
-public class IncidentDao {
-
-    private final DisasterReportDao reportDao = new DisasterReportDao();
+public class DisasterReportDao {
 
     private Connection conn() throws SQLException {
         return Database.getInstance().getConnection();
     }
 
-    /**
-     * Returns all incidents with their linked DisasterReport populated.
-     *
-     * @return list of Incident
-     */
-    public List<Incident> findAll() {
-        String sql = "SELECT * FROM incidents ORDER BY id DESC";
-        List<Incident> list = new ArrayList<>();
+    public DisasterReport insert(DisasterReport r) {
+        String sql = "INSERT INTO disaster_reports "
+                   + "(reporter_name, disaster_type, location, description, people_affected, reported_at) "
+                   + "VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, r.getReporterName());
+            ps.setString(2, r.getDisasterType().name());
+            ps.setString(3, r.getLocation());
+            ps.setString(4, r.getDescription());
+            ps.setInt(5, r.getPeopleAffected());
+            ps.setTimestamp(6, Timestamp.valueOf(r.getReportedAt()));
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    r.setId(keys.getLong(1));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[DisasterReportDao] insert error: " + e.getMessage());
+        }
+        return r;
+    }
+
+    public List<DisasterReport> findAll() {
+        String sql = "SELECT * FROM disaster_reports ORDER BY reported_at DESC";
+        List<DisasterReport> list = new ArrayList<>();
         try (Statement st = conn().createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            System.err.println("[IncidentDao] findAll error: " + e.getMessage());
+            System.err.println("[DisasterReportDao] findAll error: " + e.getMessage());
         }
         return list;
     }
 
-    /**
-     * Finds an incident by its ID. Returns null if not found.
-     *
-     * @param incidentId the ID to look up
-     * @return Incident or null
-     */
-    public Incident findById(Long incidentId) {
-        String sql = "SELECT * FROM incidents WHERE id = ?";
-        try (PreparedStatement ps = conn().prepareStatement(sql)) {
-            ps.setLong(1, incidentId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("[IncidentDao] findById error: " + e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * Finds the incident linked to a specific disaster report ID.
-     *
-     * @param reportId the source report ID
-     * @return Incident or null
-     */
-    public Object findByReportId(Long reportId) {
-        String sql = "SELECT * FROM incidents WHERE report_id = ? LIMIT 1";
+    public DisasterReport findById(Long reportId) {
+        String sql = "SELECT * FROM disaster_reports WHERE id = ?";
         try (PreparedStatement ps = conn().prepareStatement(sql)) {
             ps.setLong(1, reportId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -75,90 +64,20 @@ public class IncidentDao {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[IncidentDao] findByReportId error: " + e.getMessage());
+            System.err.println("[DisasterReportDao] findById error: " + e.getMessage());
         }
         return null;
     }
 
-    /**
-     * Inserts a new incident and sets the generated ID.
-     *
-     * @param incident Incident to insert
-     * @return Incident with id populated
-     */
-    public Incident insert(Incident incident) {
-        String sql = "INSERT INTO incidents "
-                   + "(report_id, severity_score, priority_level, status, assigned_departments, warning_message, damage_summary) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = conn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, incident.getSourceReport().getId());
-            ps.setInt(2, incident.getSeverityScore());
-            ps.setString(3, incident.getPriorityLevel().name());
-            ps.setString(4, incident.getStatus().name());
-            ps.setString(5, departmentsToString(incident.getAssignedDepartments()));
-            ps.setString(6, incident.getWarningMessage());
-            ps.setString(7, incident.getDamageSummary());
-            ps.executeUpdate();
-            try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) {
-                    incident.setId(keys.getLong(1));
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("[IncidentDao] insert error: " + e.getMessage());
-        }
-        return incident;
-    }
-
-    /**
-     * Updates an existing incident record.
-     *
-     * @param i Incident to update (must have valid id)
-     */
-    public void update(Incident i) {
-        String sql = "UPDATE incidents SET severity_score=?, priority_level=?, status=?, "
-                   + "assigned_departments=?, warning_message=?, damage_summary=? WHERE id=?";
-        try (PreparedStatement ps = conn().prepareStatement(sql)) {
-            ps.setInt(1, i.getSeverityScore());
-            ps.setString(2, i.getPriorityLevel().name());
-            ps.setString(3, i.getStatus().name());
-            ps.setString(4, departmentsToString(i.getAssignedDepartments()));
-            ps.setString(5, i.getWarningMessage());
-            ps.setString(6, i.getDamageSummary());
-            ps.setLong(7, i.getId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("[IncidentDao] update error: " + e.getMessage());
-        }
-    }
-
-    private Incident mapRow(ResultSet rs) throws SQLException {
-        Incident i = new Incident();
-        i.setId(rs.getLong("id"));
-        long reportId = rs.getLong("report_id");
-        i.setSourceReport(reportDao.findById(reportId));
-        i.setSeverityScore(rs.getInt("severity_score"));
-        i.setPriorityLevel(PriorityLevel.valueOf(rs.getString("priority_level")));
-        i.setStatus(IncidentStatus.valueOf(rs.getString("status")));
-        i.setAssignedDepartments(stringToDepartments(rs.getString("assigned_departments")));
-        i.setWarningMessage(rs.getString("warning_message"));
-        i.setDamageSummary(rs.getString("damage_summary"));
-        return i;
-    }
-
-    private String departmentsToString(List<DepartmentType> depts) {
-        if (depts == null || depts.isEmpty()) return "";
-        return depts.stream().map(Enum::name).collect(Collectors.joining(","));
-    }
-
-    private List<DepartmentType> stringToDepartments(String s) {
-        List<DepartmentType> result = new ArrayList<>();
-        if (s == null || s.isBlank()) return result;
-        for (String name : s.split(",")) {
-            try {
-                result.add(DepartmentType.valueOf(name.trim()));
-            } catch (IllegalArgumentException ignored) { }
-        }
-        return result;
+    private DisasterReport mapRow(ResultSet rs) throws SQLException {
+        DisasterReport d = new DisasterReport();
+        d.setId(rs.getLong("id"));
+        d.setReporterName(rs.getString("reporter_name"));
+        d.setDisasterType(DisasterType.valueOf(rs.getString("disaster_type")));
+        d.setLocation(rs.getString("location"));
+        d.setDescription(rs.getString("description"));
+        d.setPeopleAffected(rs.getInt("people_affected"));
+        d.setReportedAt(rs.getTimestamp("reported_at").toLocalDateTime());
+        return d;
     }
 }
