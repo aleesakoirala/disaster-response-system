@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.university.disasterresponsesystem.server.service;
 
 import com.university.disasterresponsesystem.common.model.DepartmentType;
@@ -13,18 +9,44 @@ import java.util.List;
 
 /**
  * Resource Management feature: register, list and dispatch resources.
+ * Feature 2 - Resource Allocation Tracker.
  *
- * @author alisha -12268551
+ * @author alisha -12268551 (original stub)
+ * @author Joyee Chakraborty - 12286715 (implementation)
  */
 public class ResourceService {
 
-    private final ResourceDao resourceDao = new ResourceDao();
-    private final IncidentDao incidentDao = new IncidentDao();
+    private final ResourceDao resourceDao;
+    private final IncidentDao incidentDao;
 
+    /** Default constructor - uses live DAOs backed by MySQL. */
+    public ResourceService() {
+        this.resourceDao = new ResourceDao();
+        this.incidentDao = new IncidentDao();
+    }
+
+    /** Testable constructor - accepts any DAO implementations. */
+    public ResourceService(ResourceDao resourceDao, IncidentDao incidentDao) {
+        this.resourceDao = resourceDao;
+        this.incidentDao = incidentDao;
+    }
+
+    /**
+     * Registers a new resource in the system.
+     *
+     * @param name       the resource name
+     * @param department the department it belongs to
+     * @return the saved Resource with generated ID
+     */
     public Resource addResource(String name, DepartmentType department) {
         return resourceDao.insert(new Resource(name, department));
     }
 
+    /**
+     * Returns all resources in the system.
+     *
+     * @return list of Resource objects
+     */
     public List<Resource> getResources() {
         return resourceDao.findAll();
     }
@@ -32,9 +54,11 @@ public class ResourceService {
     /**
      * Dispatches an available resource to an incident.
      *
-     * @param resourceId
-     * @param incidentId
-     * @return
+     * @param resourceId the resource to dispatch
+     * @param incidentId the target incident
+     * @return the updated Resource
+     * @throws IllegalArgumentException if resource or incident not found
+     * @throws IllegalStateException    if resource is not AVAILABLE
      */
     public Resource allocate(Long resourceId, Long incidentId) {
         Resource r = resourceDao.findById(resourceId);
@@ -42,7 +66,7 @@ public class ResourceService {
             throw new IllegalArgumentException("Resource not found: " + resourceId);
         }
         if (r.getStatus() != ResourceStatus.AVAILABLE) {
-            throw new IllegalStateException("Resource is not available");
+            throw new IllegalStateException("Resource is not available: " + resourceId);
         }
         if (incidentDao.findById(incidentId) == null) {
             throw new IllegalArgumentException("Incident not found: " + incidentId);
