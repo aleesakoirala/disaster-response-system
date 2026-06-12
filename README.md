@@ -50,7 +50,7 @@ private static final String PASSWORD = "P@ssw0rd";
 
 In NetBeans: right-click the project → **Clean and Build**
 
-Or in Terminal:
+Or in Terminal / Command Prompt:
 ```
 mvn clean install
 ```
@@ -74,12 +74,20 @@ Leave this running. Do not close it.
 
 ### Step 4 — Start the client
 
-In NetBeans: right-click project → **Run Maven** → **Other Goals**
+**Option A — In NetBeans (recommended, works on any OS):**
+
+Right-click project → **Run Maven** → **Other Goals**
 → type `javafx:run` → click **OK**
 
-Or in Mac Terminal:
+**Option B — Mac/Linux Terminal:**
 ```
 cd /path/to/disaster-response-system
+mvn javafx:run
+```
+
+**Option C — Windows Command Prompt:**
+```
+cd C:\path\to\disaster-response-system
 mvn javafx:run
 ```
 
@@ -99,8 +107,8 @@ Password: admin123
 1. **Submit disaster reports** — report type, location, people affected
 2. **Assess reports** — assign severity score, auto-generates prioritised incident
 3. **Coordinate departments** — assign departments to incidents
-4. **Resource Management** — register and dispatch resources to incidents
-5. **Alert Management** — create, view and clear public alerts
+4. **Resource Management** — register and dispatch resources to incidents (Feature 1)
+5. **Alert Management** — create, view and clear public alerts (Feature 2)
 6. **Role-based access** — Admin, Coordinator, Operator, Viewer
 7. **Audit log** — every action is logged with username and timestamp
 8. **Password security** — salted SHA-256 hashing (never stored in plain text)
@@ -112,17 +120,25 @@ Password: admin123
 Tables are created **automatically** on first server startup — no manual setup needed.
 
 To set up manually using the provided scripts:
+
+**Mac/Linux:**
 ```
 mysql -u root -p < database/schema.sql
 mysql -u root -p < database/seed.sql
+```
+
+**Windows:**
+```
+mysql -u root -p < database\schema.sql
+mysql -u root -p < database\seed.sql
 ```
 
 Tables created:
 - `users` — system accounts with roles
 - `disaster_reports` — submitted disaster reports
 - `incidents` — assessed and prioritised incidents
-- `alerts` — public alerts (Feature 1)
-- `resources` — response resources (Feature 2)
+- `alerts` — public alerts (Feature 2: Alert Management)
+- `resources` — response resources (Feature 1: Resource Management)
 - `audit_log` — non-repudiation audit trail
 
 ---
@@ -131,11 +147,13 @@ Tables created:
 
 Default server port: **6000**
 
-If port 6000 is in use, change the port in two places:
-- `server/DrsServer.java` → `DEFAULT_PORT = 6000`
-- `client/net/ServerConnection.java` → `PORT = 6000`
+If port 6000 is in use, change it in two files:
+- `src/main/java/com/university/disasterresponsesystem/server/DrsServer.java`
+  → `DEFAULT_PORT = 6000`
+- `src/main/java/com/university/disasterresponsesystem/client/net/ServerConnection.java`
+  → `PORT = 6000`
 
-Both must match.
+Both must use the same port number.
 
 ---
 
@@ -143,14 +161,14 @@ Both must match.
 
 In NetBeans: right-click project → **Test**
 
-Or in Terminal:
+Or in Terminal / Command Prompt:
 ```
 mvn test
 ```
 
-Test classes:
+Test classes located in Test Packages:
 - `AssessmentLogicTest` — priority level calculation
-- `CoordinationLogicTest` — department recommendation
+- `CoordinationLogicTest` — department recommendation by disaster type
 - `PasswordUtilTest` — password hashing and verification
 
 ---
@@ -160,7 +178,8 @@ Test classes:
 | Problem | Fix |
 |---------|-----|
 | `Communications link failure` | MySQL not running, or wrong credentials in `Database.java` |
-| `Address already in use` | Run `kill -9 $(lsof -ti :6000)` in Terminal, then restart server |
-| `JavaFX runtime components missing` | Use `mvn javafx:run`, not Run File, for the client |
-| Login shows no response | Make sure server is running before starting client |
-| Tables not created | Check MySQL credentials in `Database.java` |
+| `Address already in use: 6000` | Mac/Linux: `kill -9 $(lsof -ti :6000)` — Windows: `netstat -ano | findstr :6000` then `taskkill /PID <pid> /F` |
+| `JavaFX runtime components missing` | Use `mvn javafx:run` not Run File for the client |
+| Login shows no response | Make sure server is running before starting the client |
+| Tables not created | Check MySQL credentials and confirm MySQL service is running |
+| `Seeded default admin` not shown | Database connection failed — check credentials and MySQL status |
